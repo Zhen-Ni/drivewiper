@@ -132,8 +132,8 @@ def _main():
     parser.add_argument('drive', help='the drive to be wiped')
     parser.add_argument('-n', '--numrounds', default=1, type=int,
                         help='the number of rounds to wipe the drive')
-    parser.add_argument('-s', '--status', action='store_true',
-                        help='show status of the progress', default=True)
+    parser.add_argument('-s', '--silent', action='store_true',
+                        help='silent mode')
     parser.add_argument('-u', '--unit', choices='bkmgt', default='m',
                         help='the unit used')
     parser.add_argument('--filesize', type=int,
@@ -153,7 +153,7 @@ def _main():
         kwargs['filename_length'] = args.namelength
     
     wiper = Wiper(args.drive)
-    if args.status:
+    if not args.silent:
         max_length = queue.Queue(1)
         stop = False
         t_msg = threading.Thread(target=show_status,
@@ -163,7 +163,7 @@ def _main():
         t_msg.start()
     wiper.wipe(args.numrounds)
     stop = True
-    if args.status:
+    if not args.silent:
         t_msg.join()
         print('Finish!' + ' ' * max_length.get())
 
